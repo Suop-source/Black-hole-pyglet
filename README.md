@@ -8,16 +8,16 @@ The project simulates meteors being attracted by a black hole's gravitational fi
 
 <h3>Features</h3>
 3D camera controls
-- Black hole gravitational attraction
-- Random meteor spawning
-- Meteor-to-meteor collision detection
-- Collision response using impulse physics
-- Debris generation after impacts
-- Dynamic lighting
-- Real-time simulation using Pyglet
+*Black hole gravitational attraction
+*Random meteor spawning
+*Meteor-to-meteor collision detection
+*Collision response using impulse physics
+*Debris generation after impacts
+*Dynamic lighting
+*Real-time simulation using Pyglet
 <hr>
-<h3>Controls</h3>>
-<ul>Key	Action</ul>
-- A	Rotate camera left
-- D	Rotate camera right
-- Q	Clear all active meteors
+<h3>Controls</h3>
+Key	Action
+*A	Rotate camera left
+*D	Rotate camera right
+*Q	Clear all active meteors
