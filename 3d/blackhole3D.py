@@ -32,7 +32,11 @@ camera.z = 0
 camera_phi = 0.0
 camera.distance = 700
 
-point_light = lib.shapes.Sphere(x=700, y=0, z=0, radius=0.2, color=(255, 0, 0, 255), batch=batch) # A sphere to represent the light source
+ # A sphere to represent the light source
+point_light = lib.shapes.Sphere(x=700, y=0, z=0,
+                                radius=0.2,
+                                color=(255, 0, 0, 255),
+                                batch=batch)
 
 
 def updateCamera(dt):
@@ -62,12 +66,16 @@ def updateCamera(dt):
 
     #print("phi:", camera_phi) test to see if it rotates
 
-
+"""
+Just a Sun class so i could be easier seen if the camera is rotating or not
+"""
 class Sun:
     def __init__(self):
         self.sun = lib.Sphere(x=-3000, y=0, z = 0, radius=400, color=(200, 170, 10), batch=batch)
 
-
+"""
+Blackhole class 
+"""
 class BlackHole:
     def __init__(self):
         self.mass = 700
@@ -76,24 +84,30 @@ class BlackHole:
         self.hole = lib.Sphere(x=0, y=0, z=0, radius=self.radius, color=(10, 10, 25, 255))
         self.glow = lib.Sphere(x=0, y=0, z=0, radius=self.radius+1.5, color=(255, 127, 0, 15))
 
+    # applying the gravitational effect
     def attract(self, meteor, dt):
         dist = np.array([meteor.pos[0] - self.hole.x, meteor.pos[1] - self.hole.y, meteor.pos[2] - self.hole.z])
 
         distance = np.linalg.norm(dist) # Normalizing
 
+        # If in range
         if distance - meteor.radius > self.gravityRadius:
             return np.array([0,0,0], dtype=float)
-        
+
+        # Delete if consumed by blackhole
         if distance < self.radius:
             meteor.life = 60
             return np.array([0,0,0], dtype=float)
         
-        G = 750000
+        G = 750000 # Gravitational force
 
         new_vector = -G * self.mass * dist / (distance**3) # (-G) so that it pulls towards
 
         return new_vector   # returns the new force vector
 
+"""
+Metoer Class with movements and lifetime function for each meteor
+"""
 class Meteor:
     def __init__(self):
         self.radius = rdm.uniform(3, 20)
@@ -155,7 +169,7 @@ class Meteor:
         self.pos = np.array([self.x, self.y, self.z], dtype=float)
         self.meteor = lib.Sphere(x=self.x, y=self.y, z=self.z, radius=self.radius, color=color, batch=batch)
 
-
+    # Updating each meteor
     def update(self, dt):
         ax, ay, az = blackhole.attract(self, dt)
 
@@ -184,7 +198,10 @@ class Meteor:
 
     def is_alive(self, dt):
         return self.life < self.lifetime
-    
+
+"""
+Debris (small rocks) Class after 2 or more Meteors are hit
+"""
 class Debris:
     def __init__(self, normal, position, color):
         self.x, self.y, self.z = position
@@ -201,21 +218,24 @@ class Debris:
         self.pos = np.array([self.x, self.y, self.z], dtype=float)
 
         self.debris = lib.Sphere(self.pos[0], self.pos[1], self.pos[2], self.radius, color=color, batch=batch)
-    
+
+    # Updating the movements
     def update(self, dt):
         ax, ay, az = blackhole.attract(self, dt)
         self.life += dt
 
+        # 3 dimentional movement
         self.velocity[0] += (ax / self.mass) * dt
         self.velocity[1] += (ay / self.mass) * dt
         self.velocity[2] += (az / self.mass) * dt
 
+        # Updating position
         self.x += self.velocity[0] * dt
         self.y += self.velocity[1] * dt
         self.z += self.velocity[2] * dt
-
         self.pos = np.array([self.x, self.y, self.z], dtype=float)
 
+        # Moving the actual debris
         self.debris.x = self.pos[0]
         self.debris.y = self.pos[1]
         self.debris.z = self.pos[2]
